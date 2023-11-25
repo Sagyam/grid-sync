@@ -3,10 +3,14 @@ const Footer = () => {
     <footer className="wrapper">
       <div className="flex">
         <p className="text-xs">
-          {new Date().getFullYear()} -{' '}
-          <a href="https://sznm.dev" target="_blank" rel="noopener noreferrer">
-            sznm.dev
-          </a>
+          {/* <a */}
+          {/*   href="https://sagyamthapa.com.np" */}
+          {/*   aria-label="Sagyam Thapa's website" */}
+          {/*   target="_blank" */}
+          {/*   rel="noopener noreferrer" */}
+          {/* > */}
+          {/*   Made by Sagyam */}
+          {/* </a> */}
         </p>
       </div>
     </footer>
