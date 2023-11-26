@@ -1,8 +1,4 @@
-import type {
-  ColumnDef,
-  ColumnFiltersState,
-  SortingState,
-} from '@tanstack/react-table';
+import type { ColumnDef, ColumnFiltersState } from '@tanstack/react-table';
 import {
   flexRender,
   getCoreRowModel,
@@ -11,6 +7,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import { ArrowUpDown } from 'lucide-react';
 import { useState } from 'react';
 
 import { Input } from '../../../components/ui/input';
@@ -18,10 +15,12 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableHead,
   TableHeader,
   TableRow,
 } from '../../../components/ui/table';
+import { Button } from '@/lib/components/ui/button';
+import { SortBy } from '@/lib/pages/home/entity';
+import type { Pagination } from '@/lib/pages/home/entity';
 
 import { DataTablePagination } from './DataTablePagination';
 import { DataTableViewOptions } from './DataTableViewOptions';
@@ -29,17 +28,20 @@ import { DataTableViewOptions } from './DataTableViewOptions';
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  pagination: Pagination;
   onPageSizeChange: (pageSize: number) => void;
   onPaginationChange: (page: number) => void;
+  onSortChange: (sortBy: SortBy) => void;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  pagination,
   onPageSizeChange,
   onPaginationChange,
+  onSortChange,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState({});
   const [columnVisibility, setColumnVisibility] = useState({});
@@ -48,14 +50,12 @@ export function DataTable<TData, TValue>({
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     onRowSelectionChange: setRowSelection,
     onColumnVisibilityChange: setColumnVisibility,
     state: {
-      sorting,
       columnFilters,
       rowSelection,
       columnVisibility,
@@ -63,8 +63,8 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div>
-      <div className="flex items-center py-4">
+    <>
+      <div className="flex items-stretch py-4">
         <Input
           placeholder="Filter Name"
           value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
@@ -73,29 +73,63 @@ export function DataTable<TData, TValue>({
           }
           className="max-w-sm"
         />
-
         <DataTableViewOptions table={table} />
       </div>
 
       <div className="rounded-md border">
         <Table>
           <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
+            <TableRow>
+              <TableCell>
+                <Button
+                  variant="ghost"
+                  onClick={() => onSortChange(SortBy.NAME)}
+                >
+                  Name
+                  <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+              </TableCell>
+
+              <TableCell>
+                <Button
+                  variant="ghost"
+                  onClick={() => onSortChange(SortBy.POST_CODE)}
+                >
+                  Post Code
+                  <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+              </TableCell>
+
+              <TableCell>
+                <Button
+                  variant="ghost"
+                  onClick={() => onSortChange(SortBy.WATT_CAPACITY)}
+                >
+                  Watt Capacity
+                  <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+              </TableCell>
+
+              <TableCell>
+                <Button
+                  variant="ghost"
+                  onClick={() => onSortChange(SortBy.CREATED_AT)}
+                >
+                  Created At
+                  <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+              </TableCell>
+
+              <TableCell>
+                <Button
+                  variant="ghost"
+                  onClick={() => onSortChange(SortBy.RETURN_DATE)}
+                >
+                  Return Date
+                  <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+              </TableCell>
+            </TableRow>
           </TableHeader>
 
           <TableBody>
@@ -131,9 +165,10 @@ export function DataTable<TData, TValue>({
 
       <DataTablePagination
         table={table}
+        pagination={pagination}
         onPageSizeChange={onPageSizeChange}
         onPaginationChange={onPaginationChange}
       />
-    </div>
+    </>
   );
 }

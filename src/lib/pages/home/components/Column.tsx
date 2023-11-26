@@ -2,7 +2,6 @@ import type { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
 
 import { Button } from '../../../components/ui/button';
-import { Checkbox } from '../../../components/ui/checkbox';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,35 +14,10 @@ import type { Battery } from '@/lib/pages/home/entity';
 
 export const columns: ColumnDef<Battery>[] = [
   {
-    id: 'select',
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && 'indeterminate')
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
     accessorKey: 'name',
-    header: ({ column }) => {
+    header: () => {
       return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        >
+        <Button variant="ghost">
           Name
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
@@ -52,16 +26,20 @@ export const columns: ColumnDef<Battery>[] = [
   },
   {
     accessorKey: 'postCode',
-    header: 'Post Code',
+    header: () => {
+      return (
+        <Button variant="ghost">
+          Post Code
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
   },
   {
     accessorKey: 'wattCapacity',
-    header: ({ column }) => {
+    header: () => {
       return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        >
+        <Button variant="ghost">
           Wattage
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
@@ -70,12 +48,9 @@ export const columns: ColumnDef<Battery>[] = [
   },
   {
     accessorKey: 'createdAt',
-    header: ({ column }) => {
+    header: () => {
       return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        >
+        <Button variant="ghost">
           Created At
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
@@ -84,19 +59,15 @@ export const columns: ColumnDef<Battery>[] = [
   },
   {
     accessorKey: 'returnDate',
-    header: ({ column }) => {
+    header: () => {
       return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        >
+        <Button variant="ghost">
           Return Date
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
   },
-
   {
     id: 'actions',
     cell: ({ row }) => {
