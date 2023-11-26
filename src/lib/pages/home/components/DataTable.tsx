@@ -20,7 +20,6 @@ import {
 } from '../../../components/ui/table';
 import { Button } from '@/lib/components/ui/button';
 import { SortBy } from '@/lib/pages/home/entity';
-import type { Pagination } from '@/lib/pages/home/entity';
 
 import { DataTablePagination } from './DataTablePagination';
 import { DataTableViewOptions } from './DataTableViewOptions';
@@ -28,19 +27,19 @@ import { DataTableViewOptions } from './DataTableViewOptions';
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  pagination: Pagination;
   onPageSizeChange: (pageSize: number) => void;
   onPaginationChange: (page: number) => void;
   onSortChange: (sortBy: SortBy) => void;
+  onFilterChange: (filter: string) => void;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-  pagination,
   onPageSizeChange,
   onPaginationChange,
   onSortChange,
+  onFilterChange,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState({});
@@ -68,9 +67,10 @@ export function DataTable<TData, TValue>({
         <Input
           placeholder="Filter Name"
           value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
-          onChange={(event) =>
-            table.getColumn('name')?.setFilterValue(event.target.value)
-          }
+          onChange={(e) => {
+            table.getColumn('name')?.setFilterValue(e.target.value);
+            onFilterChange(e.target.value);
+          }}
           className="max-w-sm"
         />
         <DataTableViewOptions table={table} />
@@ -165,7 +165,6 @@ export function DataTable<TData, TValue>({
 
       <DataTablePagination
         table={table}
-        pagination={pagination}
         onPageSizeChange={onPageSizeChange}
         onPaginationChange={onPaginationChange}
       />

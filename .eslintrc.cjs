@@ -3,7 +3,8 @@ module.exports = {
   extends: ["sznm/react", "plugin:react/jsx-runtime"],
   ignorePatterns: ["node_modules/", "dist/", "ui/", ".turbo/", "public/"],
   rules: {
-    "@typescript-eslint/consistent-type-imports": "error"
+    "@typescript-eslint/consistent-type-imports": "error",
+    "react/hooks/exhaustive-deps": "off",
   }
 
 };

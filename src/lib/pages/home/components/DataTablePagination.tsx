@@ -15,22 +15,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../../../components/ui/select';
-import type { Pagination } from '@/lib/pages/home/entity';
+import { usePagination } from '@/lib/context/PaginationContext';
 
 interface DataTablePaginationProps<TData> {
   table: Table<TData>;
-  pagination: Pagination;
   onPageSizeChange: (pageSize: number) => void;
   onPaginationChange: (page: number) => void;
 }
 
 export function DataTablePagination<TData>({
   table,
-  pagination,
   onPageSizeChange,
   onPaginationChange,
 }: DataTablePaginationProps<TData>) {
   const [totalPages, setTotalPages] = useState(0);
+  const { pagination } = usePagination();
 
   useEffect(() => {
     setTotalPages(Math.round(pagination.total / pagination.pageSize));

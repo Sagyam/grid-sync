@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '../../../components/ui/dropdown-menu';
 import type { Battery } from '@/lib/pages/home/entity';
+import { deleteBatteryById } from '@/lib/utils/data-fetcher';
 
 export const columns: ColumnDef<Battery>[] = [
   {
@@ -87,6 +88,10 @@ export const columns: ColumnDef<Battery>[] = [
               onClick={() => navigator.clipboard.writeText(battery.id)}
             >
               Copy battery ID
+            </DropdownMenuItem>
+
+            <DropdownMenuItem onClick={() => deleteBatteryById(battery.id)}>
+              Delete
             </DropdownMenuItem>
             <DropdownMenuSeparator />
           </DropdownMenuContent>

@@ -30,3 +30,9 @@ export async function getBatteryByQueryParams(
   const payload = await response.json();
   return dateFromNow(payload);
 }
+
+export async function deleteBatteryById(id: string): Promise<void> {
+  await fetch(`http://localhost:8000/battery/${id}`, {
+    method: 'DELETE',
+  });
+}

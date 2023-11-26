@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { usePagination } from '@/lib/context/PaginationContext';
 import { useQueryParams } from '@/lib/context/QueryContext';
 import { columns } from '@/lib/pages/home/components/Column';
 import { DataTable } from '@/lib/pages/home/components/DataTable';
@@ -19,27 +20,38 @@ const Home = () => {
     pageSize: 1,
   });
 
-  const { queryParams, setPage, setPageSize, setSortOrder, setSortBy } =
-    useQueryParams();
+  const {
+    queryParams,
+    setPage,
+    setPageSize,
+    setSortOrder,
+    setSortBy,
+    setFilter,
+  } = useQueryParams();
+
+  const { setPagination } = usePagination();
 
   useEffect(() => {
     async function wrapper() {
       const payload = await getAllBatteries();
       setDTO(payload);
+      setPagination(extractPaginationInfo(payload));
     }
 
     wrapper();
-  }, []);
+  }, [setPagination]);
 
   const handlePageSizeChange = async (pageSize: number) => {
     setPageSize(pageSize);
     const payload = getBatteryByQueryParams(queryParams);
+    setPagination(extractPaginationInfo(await payload));
     setDTO(await payload);
   };
 
   const handlePaginationChange = async (page: number) => {
     setPage(page);
     const payload = getBatteryByQueryParams(queryParams);
+    setPagination(extractPaginationInfo(await payload));
     setDTO(await payload);
   };
 
@@ -50,6 +62,14 @@ const Home = () => {
     setSortBy(sortBy);
     const payload = getBatteryByQueryParams(queryParams);
     setDTO(await payload);
+    setPagination(extractPaginationInfo(await payload));
+  };
+  const handleFilterChange = async (filter: string) => {
+    const filterString = `name:contains:${filter}`;
+    setFilter(filterString);
+    const payload = getBatteryByQueryParams(queryParams);
+    setDTO(await payload);
+    setPagination(extractPaginationInfo(await payload));
   };
 
   return (
@@ -57,10 +77,10 @@ const Home = () => {
       <DataTable
         columns={columns}
         data={dto.batteries}
-        pagination={extractPaginationInfo(dto)}
         onPageSizeChange={handlePageSizeChange}
         onPaginationChange={handlePaginationChange}
         onSortChange={handleSortChange}
+        onFilterChange={handleFilterChange}
       />
     </div>
   );
