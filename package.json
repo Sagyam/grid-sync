@@ -2,7 +2,7 @@
   "name": "vite-react-tailwind-starter",
   "version": "0.1.0",
   "private": true,
-  "author": "sozonome",
+  "author": "Sagyam Thapa",
   "type": "module",
   "scripts": {
     "dev": "vite",
