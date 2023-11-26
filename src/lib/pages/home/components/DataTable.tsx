@@ -13,13 +13,6 @@ import {
 } from '@tanstack/react-table';
 import { useState } from 'react';
 
-import { Button } from '../../../components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from '../../../components/ui/dropdown-menu';
 import { Input } from '../../../components/ui/input';
 import {
   Table,
@@ -30,14 +23,21 @@ import {
   TableRow,
 } from '../../../components/ui/table';
 
+import { DataTablePagination } from './DataTablePagination';
+import { DataTableViewOptions } from './DataTableViewOptions';
+
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  onPageSizeChange: (pageSize: number) => void;
+  onPaginationChange: (page: number) => void;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  onPageSizeChange,
+  onPaginationChange,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -67,39 +67,14 @@ export function DataTable<TData, TValue>({
       <div className="flex items-center py-4">
         <Input
           placeholder="Filter Name"
-          value={(table.getColumn('email')?.getFilterValue() as string) ?? ''}
+          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
           onChange={(event) =>
-            table.getColumn('email')?.setFilterValue(event.target.value)
+            table.getColumn('name')?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
 
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <DataTableViewOptions table={table} />
       </div>
 
       <div className="rounded-md border">
@@ -122,6 +97,7 @@ export function DataTable<TData, TValue>({
               </TableRow>
             ))}
           </TableHeader>
+
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
@@ -153,10 +129,11 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
 
-      <div className="flex-1 text-sm text-muted-foreground">
-        {table.getFilteredSelectedRowModel().rows.length} of{' '}
-        {table.getFilteredRowModel().rows.length} row(s) selected.
-      </div>
+      <DataTablePagination
+        table={table}
+        onPageSizeChange={onPageSizeChange}
+        onPaginationChange={onPaginationChange}
+      />
     </div>
   );
 }

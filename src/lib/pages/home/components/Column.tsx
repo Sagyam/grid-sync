@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../../../components/ui/dropdown-menu';
-import type { Battery } from '@/lib/pages/home/battery.entity';
+import type { Battery } from '@/lib/pages/home/entity';
 
 export const columns: ColumnDef<Battery>[] = [
   {
