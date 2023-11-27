@@ -168,7 +168,7 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No data found
+                  {isLoading ? 'Loading...' : 'No data'}
                 </TableCell>
               </TableRow>
             )}

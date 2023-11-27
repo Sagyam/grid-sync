@@ -73,7 +73,7 @@ const Home = () => {
     const payload = getBatteryByQueryParams(queryParams);
     setDTO(await payload);
     setPagination(extractPaginationInfo(await payload));
-    setIsLoading(true);
+    setIsLoading(false);
   };
   const handleFilterChange = async (filter: string) => {
     setIsLoading(true);
