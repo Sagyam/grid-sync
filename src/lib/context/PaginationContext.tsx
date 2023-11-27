@@ -23,6 +23,7 @@ const PaginationProvider: React.FC<PaginationProviderProps> = ({
     total: 0,
     page: 1,
     pageSize: 10,
+    totalPages: 1,
   });
 
   const contextValue = useMemo(

@@ -8,7 +8,8 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { ArrowUpDown } from 'lucide-react';
-import { useState } from 'react';
+import type { ChangeEvent } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Input } from '../../../components/ui/input';
 import {
@@ -60,17 +61,26 @@ export function DataTable<TData, TValue>({
       columnVisibility,
     },
   });
+  const [searchQuery, setSearchQuery] = useState<string>('');
+
+  useEffect(() => {
+    onFilterChange(searchQuery);
+  }, [searchQuery]);
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.value === '') {
+      onFilterChange('');
+    }
+    setSearchQuery(event.target.value);
+  };
 
   return (
     <>
       <div className="flex items-stretch py-4">
         <Input
           placeholder="Filter Name"
-          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
-          onChange={(e) => {
-            table.getColumn('name')?.setFilterValue(e.target.value);
-            onFilterChange(e.target.value);
-          }}
+          value={searchQuery}
+          onChange={handleChange}
           className="max-w-sm"
         />
         <DataTableViewOptions table={table} />

@@ -5,7 +5,6 @@ import {
   DoubleArrowRightIcon,
 } from '@radix-ui/react-icons';
 import type { Table } from '@tanstack/react-table';
-import { useEffect, useState } from 'react';
 
 import { Button } from '../../../components/ui/button';
 import {
@@ -28,12 +27,7 @@ export function DataTablePagination<TData>({
   onPageSizeChange,
   onPaginationChange,
 }: DataTablePaginationProps<TData>) {
-  const [totalPages, setTotalPages] = useState(0);
   const { pagination } = usePagination();
-
-  useEffect(() => {
-    setTotalPages(Math.round(pagination.total / pagination.pageSize));
-  }, [pagination]);
 
   return (
     <div className="flex items-center justify-end px-2 py-4">
@@ -60,7 +54,7 @@ export function DataTablePagination<TData>({
           </Select>
         </div>
         <div className="flex w-[100px] items-center justify-center text-sm font-medium">
-          Page {pagination.page} of {totalPages}
+          Page {pagination.page} of {pagination.totalPages}
         </div>
         <div className="flex items-center space-x-2">
           <Button
@@ -87,7 +81,7 @@ export function DataTablePagination<TData>({
             onClick={() => {
               onPaginationChange(pagination.page + 1);
             }}
-            disabled={pagination.page === totalPages}
+            disabled={pagination.page === pagination.totalPages}
           >
             <span className="sr-only">Go to next page</span>
             <ChevronRightIcon className="h-4 w-4" />
@@ -96,9 +90,9 @@ export function DataTablePagination<TData>({
             variant="outline"
             className="hidden h-8 w-8 p-0 lg:flex"
             onClick={() => {
-              onPaginationChange(totalPages);
+              onPaginationChange(pagination.totalPages);
             }}
-            disabled={pagination.page === totalPages}
+            disabled={pagination.page === pagination.totalPages}
           >
             <span className="sr-only">Go to last page</span>
             <DoubleArrowRightIcon className="h-4 w-4" />

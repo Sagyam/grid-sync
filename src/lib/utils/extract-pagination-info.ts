@@ -5,5 +5,6 @@ export function extractPaginationInfo(dto: BatteryDTO): Pagination {
     total: dto.total,
     page: dto.page,
     pageSize: dto.pageSize,
+    totalPages: dto.totalPages,
   };
 }

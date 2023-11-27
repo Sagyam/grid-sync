@@ -11,6 +11,7 @@ export interface BatteryDTO {
   total: number;
   page: number;
   pageSize: number;
+  totalPages: number;
   batteries: Battery[];
 }
 
@@ -18,6 +19,7 @@ export interface Pagination {
   total: number;
   page: number;
   pageSize: number;
+  totalPages: number;
 }
 
 export enum SortOrder {

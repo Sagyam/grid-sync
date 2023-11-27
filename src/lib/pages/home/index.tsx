@@ -18,6 +18,7 @@ const Home = () => {
     total: 1,
     page: 1,
     pageSize: 1,
+    totalPages: 1,
   });
 
   const {
