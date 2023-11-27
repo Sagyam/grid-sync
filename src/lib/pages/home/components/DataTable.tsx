@@ -8,8 +8,9 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { ArrowUpDown } from 'lucide-react';
+import { throttle } from 'lodash';
 import type { ChangeEvent } from 'react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { Input } from '../../../components/ui/input';
 import {
@@ -62,23 +63,21 @@ export function DataTable<TData, TValue>({
     },
   });
   const [searchQuery, setSearchQuery] = useState<string>('');
-
-  useEffect(() => {
-    onFilterChange(searchQuery);
-  }, [searchQuery]);
+  const throttleSearch = throttle(onFilterChange, 2000, { trailing: true });
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.value === '') {
       onFilterChange('');
     }
     setSearchQuery(event.target.value);
+    throttleSearch(event.target.value);
   };
 
   return (
     <>
       <div className="flex items-stretch py-4">
         <Input
-          placeholder="Filter Name"
+          placeholder="Search database for name"
           value={searchQuery}
           onChange={handleChange}
           className="max-w-sm"
