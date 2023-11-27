@@ -60,7 +60,7 @@ export function DataTablePagination<TData>({
           <Button
             variant="outline"
             className="hidden h-8 w-8 p-0 lg:flex"
-            onClick={() => onPaginationChange(0)}
+            onClick={() => onPaginationChange(1)}
             disabled={pagination.page === 1}
           >
             <span className="sr-only">Go to first page</span>

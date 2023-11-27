@@ -27,6 +27,7 @@ import { DataTablePagination } from './DataTablePagination';
 import { DataTableViewOptions } from './DataTableViewOptions';
 
 interface DataTableProps<TData, TValue> {
+  isLoading: boolean;
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   onPageSizeChange: (pageSize: number) => void;
@@ -36,6 +37,7 @@ interface DataTableProps<TData, TValue> {
 }
 
 export function DataTable<TData, TValue>({
+  isLoading,
   columns,
   data,
   onPageSizeChange,
@@ -145,6 +147,8 @@ export function DataTable<TData, TValue>({
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
+                  // if isLoading then grey out the row
+                  className={isLoading ? 'opacity-50' : ''}
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
                 >
@@ -164,7 +168,7 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  No data found
                 </TableCell>
               </TableRow>
             )}
