@@ -41,7 +41,8 @@
     "react-helmet": "^6.1.0",
     "react-router-dom": "^6.19.0",
     "tailwind-merge": "^2.0.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "zustand": "^4.4.6"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^18.4.2",
@@ -56,6 +57,7 @@
     "commitlint": "^18.4.2",
     "eslint": "^8.53.0",
     "eslint-config-sznm": "^2.0.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "husky": "^8.0.3",
     "lint-staged": "^15.1.0",
     "postcss": "^8.4.31",

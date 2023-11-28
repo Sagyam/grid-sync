@@ -1,14 +1,20 @@
+import { Button } from '@/lib/components/ui/button';
+import useAppStateStore from '@/lib/store/app-state-store.ts';
+import useQueryParamsStore from '@/lib/store/query-params-store.ts';
+import type { Filter } from '@/lib/pages/home/entity';
+import {
+  FilterBy,
+  FilterOperator,
+  SortBy,
+  SortOrder,
+} from '@/lib/pages/home/entity';
 import type { ColumnDef, ColumnFiltersState } from '@tanstack/react-table';
 import {
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
 import { ArrowUpDown } from 'lucide-react';
-import { throttle } from 'lodash';
 import type { ChangeEvent } from 'react';
 import { useState } from 'react';
 
@@ -20,31 +26,22 @@ import {
   TableHeader,
   TableRow,
 } from '../../../components/ui/table';
-import { Button } from '@/lib/components/ui/button';
-import { SortBy } from '@/lib/pages/home/entity';
 
 import { DataTablePagination } from './DataTablePagination';
 import { DataTableViewOptions } from './DataTableViewOptions';
 
 interface DataTableProps<TData, TValue> {
-  isLoading: boolean;
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  onPageSizeChange: (pageSize: number) => void;
-  onPaginationChange: (page: number) => void;
-  onSortChange: (sortBy: SortBy) => void;
-  onFilterChange: (filter: string) => void;
 }
 
 export function DataTable<TData, TValue>({
-  isLoading,
   columns,
   data,
-  onPageSizeChange,
-  onPaginationChange,
-  onSortChange,
-  onFilterChange,
 }: DataTableProps<TData, TValue>) {
+  const { isLoading, isError, errorMessage } = useAppStateStore();
+  const { queryParams, setSortBy, setSortOrder, setFilter, setPage } =
+    useQueryParamsStore();
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState({});
   const [columnVisibility, setColumnVisibility] = useState({});
@@ -52,10 +49,7 @@ export function DataTable<TData, TValue>({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
-    getFilteredRowModel: getFilteredRowModel(),
     onRowSelectionChange: setRowSelection,
     onColumnVisibilityChange: setColumnVisibility,
     state: {
@@ -64,15 +58,24 @@ export function DataTable<TData, TValue>({
       columnVisibility,
     },
   });
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const throttleSearch = throttle(onFilterChange, 2000, { trailing: true });
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if (event.target.value === '') {
-      onFilterChange('');
-    }
+  const [searchQuery, setSearchQuery] = useState<string>('');
+
+  const handleQueryChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
-    throttleSearch(event.target.value);
+    const filter: Filter = {
+      field: FilterBy.NAME,
+      operator: FilterOperator.CONTAINS,
+      value: event.target.value,
+    };
+    setFilter(filter);
+    setPage(1);
+  };
+  const handleSortChange = (sortBy: SortBy) => {
+    const flippedSortOrder =
+      queryParams.sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC;
+    setSortOrder(flippedSortOrder);
+    setSortBy(sortBy);
   };
 
   return (
@@ -81,7 +84,7 @@ export function DataTable<TData, TValue>({
         <Input
           placeholder="Search database for name"
           value={searchQuery}
-          onChange={handleChange}
+          onChange={handleQueryChange}
           className="max-w-sm"
         />
         <DataTableViewOptions table={table} />
@@ -94,7 +97,7 @@ export function DataTable<TData, TValue>({
               <TableCell>
                 <Button
                   variant="ghost"
-                  onClick={() => onSortChange(SortBy.NAME)}
+                  onClick={() => handleSortChange(SortBy.NAME)}
                 >
                   Name
                   <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -104,7 +107,7 @@ export function DataTable<TData, TValue>({
               <TableCell>
                 <Button
                   variant="ghost"
-                  onClick={() => onSortChange(SortBy.POST_CODE)}
+                  onClick={() => handleSortChange(SortBy.POST_CODE)}
                 >
                   Post Code
                   <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -114,7 +117,7 @@ export function DataTable<TData, TValue>({
               <TableCell>
                 <Button
                   variant="ghost"
-                  onClick={() => onSortChange(SortBy.WATT_CAPACITY)}
+                  onClick={() => handleSortChange(SortBy.WATT_CAPACITY)}
                 >
                   Watt Capacity
                   <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -124,7 +127,7 @@ export function DataTable<TData, TValue>({
               <TableCell>
                 <Button
                   variant="ghost"
-                  onClick={() => onSortChange(SortBy.CREATED_AT)}
+                  onClick={() => handleSortChange(SortBy.CREATED_AT)}
                 >
                   Created At
                   <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -134,7 +137,7 @@ export function DataTable<TData, TValue>({
               <TableCell>
                 <Button
                   variant="ghost"
-                  onClick={() => onSortChange(SortBy.RETURN_DATE)}
+                  onClick={() => handleSortChange(SortBy.RETURN_DATE)}
                 >
                   Return Date
                   <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -147,7 +150,6 @@ export function DataTable<TData, TValue>({
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
-                  // if isLoading then grey out the row
                   className={isLoading ? 'opacity-50' : ''}
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
@@ -168,7 +170,11 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  {isLoading ? 'Loading...' : 'No data'}
+                  {isLoading
+                    ? 'Loading...'
+                    : isError
+                      ? errorMessage
+                      : 'No data'}
                 </TableCell>
               </TableRow>
             )}
@@ -176,11 +182,7 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
 
-      <DataTablePagination
-        table={table}
-        onPageSizeChange={onPageSizeChange}
-        onPaginationChange={onPaginationChange}
-      />
+      <DataTablePagination table={table} />
     </>
   );
 }
