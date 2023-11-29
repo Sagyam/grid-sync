@@ -1,5 +1,5 @@
 import { Button } from '@/lib/components/ui/button';
-import useAppStateStore from '@/lib/store/app-state-store.ts';
+import useLoadingStateStore from '@/lib/store/loading-state-store.ts';
 import useQueryParamsStore from '@/lib/store/query-params-store.ts';
 import type { Filter } from '@/lib/pages/home/entity';
 import {
@@ -39,7 +39,7 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
-  const { isLoading, isError, errorMessage } = useAppStateStore();
+  const { isLoading, isError, errorMessage } = useLoadingStateStore();
   const { queryParams, setSortBy, setSortOrder, setFilter, setPage } =
     useQueryParamsStore();
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);

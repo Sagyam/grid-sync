@@ -1,5 +1,11 @@
 import type { ColumnDef } from '@tanstack/react-table';
-import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
+import {
+  ArrowUpDown,
+  Copy,
+  MoreHorizontal,
+  Pencil,
+  TrashIcon,
+} from 'lucide-react';
 
 import { Button } from '../../../components/ui/button';
 import {
@@ -11,7 +17,7 @@ import {
   DropdownMenuTrigger,
 } from '../../../components/ui/dropdown-menu';
 import type { Battery } from '@/lib/pages/home/entity';
-import { deleteBatteryById } from '@/lib/utils/data-fetcher';
+import { useDeleteBattery } from '@/lib/utils/data-fetcher';
 
 export const columns: ColumnDef<Battery>[] = [
   {
@@ -87,11 +93,18 @@ export const columns: ColumnDef<Battery>[] = [
             <DropdownMenuItem
               onClick={() => navigator.clipboard.writeText(battery.id)}
             >
-              Copy battery ID
+              <Copy className="mr-2 h-4 w-4" />
+              Copy ID
             </DropdownMenuItem>
 
-            <DropdownMenuItem onClick={() => deleteBatteryById(battery.id)}>
+            <DropdownMenuItem onClick={() => useDeleteBattery(battery.id)}>
+              <TrashIcon className="mr-2 h-4 w-4" />
               Delete
+            </DropdownMenuItem>
+
+            <DropdownMenuItem>
+              <Pencil className="mr-2 h-4 w-4" />
+              Edit
             </DropdownMenuItem>
             <DropdownMenuSeparator />
           </DropdownMenuContent>
