@@ -1,14 +1,11 @@
-import { useBatteryByQueryParams } from '@/lib/hooks/useBattery.ts';
+import { useFetchBattery } from '@/lib/hooks/useBattery.ts';
 import { columns } from '@/lib/pages/home/components/Column';
 import { DataTable } from '@/lib/pages/home/components/DataTable';
 
 const Home = () => {
   return (
     <div className="container mx-auto py-10">
-      <DataTable
-        columns={columns}
-        data={useBatteryByQueryParams()?.batteries ?? []}
-      />
+      <DataTable columns={columns} data={useFetchBattery()?.batteries ?? []} />
     </div>
   );
 };

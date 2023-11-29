@@ -28,7 +28,7 @@ interface AppState
     SuccessState,
     SearchQueryState {}
 
-const useAppStateStore = create<AppState>((set) => ({
+const useLoadingStateStore = create<AppState>((set) => ({
   isLoading: false,
   setLoading: (loading) => set({ isLoading: loading }),
 
@@ -46,4 +46,4 @@ const useAppStateStore = create<AppState>((set) => ({
   setSearchQuery: (searchQuery) => set({ searchQuery }),
 }));
 
-export default useAppStateStore;
+export default useLoadingStateStore;
